@@ -1,0 +1,43 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/colorPrimaryDark"
+    tools:context="com.ptappmovil.upiita.pt_appmovil.SplashScreen">
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome"
+        android:textColor="#FFF"
+        android:textAlignment="center"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="100px"
+        android:textSize="70px"/>
+
+    <FrameLayout
+        android:layout_width="500px"
+        android:layout_gravity="center"
+        android:layout_height="472px"
+        android:fitsSystemWindows="true"
+        android:background="@drawable/logo_upiita">
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
+
+
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>
