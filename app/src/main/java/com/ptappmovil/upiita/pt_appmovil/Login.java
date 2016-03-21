@@ -1,75 +1,39 @@
 package com.ptappmovil.upiita.pt_appmovil;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
+
+import android.content.Intent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 public class Login extends AppCompatActivity {
-
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
 
-    @InjectView(R.id.input_email) EditText _emailText;
-    @InjectView(R.id.input_password) EditText _passwordText;
-    @InjectView(R.id.btn_login) Button _loginButton;
-    @InjectView(R.id.link_signup) TextView _signupLink;
+    @InjectView(R.id.usuario) EditText usuarioText;
+    @InjectView(R.id.password) EditText passwordText;
+    @InjectView(R.id.email_sign_in_button) Button loginButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         ButterKnife.inject(this);
 
-        _loginButton.setOnClickListener(new View.OnClickListener() {
-
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 login();
-            }
-        });
-
-        _signupLink.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
             }
         });
     }
@@ -82,38 +46,37 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-        _loginButton.setEnabled(false);
+        loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
+        final ProgressDialog progressDialog = new ProgressDialog(Login.this, R.style.AppTheme_Dark_Dialog);
         progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
+        progressDialog.setMessage("Iniciando Sesión...");
         progressDialog.show();
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        final String usuario = usuarioText.getText().toString();
+        final String password = passwordText.getText().toString();
 
-        // TODO: Implement your own authentication logic here.
+        //Aqui se conecta a la BD para verificar los datos
 
         new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
+            new Runnable() {
+                public void run() {
+                    //Este if debe de hacerse con la validacion de arriba
+                    if( usuario.equals("david.perez") && password.equals("pass123") )
                         onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+                    else
+                        onLoginFailed();
+                    progressDialog.dismiss();
+                }
+            }, 3000
+        );
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
 
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
                 this.finish();
             }
         }
@@ -121,45 +84,48 @@ public class Login extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // disable going back to the MainActivity
         moveTaskToBack(true);
     }
 
     public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
+        Toast.makeText(getBaseContext(), "Bienvenido", Toast.LENGTH_LONG).show();
+
+        Intent main_intent = new Intent(this, MainActivity.class);
+        startActivity(main_intent);
+
+
+
+
         finish();
     }
 
     public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "Ocurrió un error", Toast.LENGTH_LONG).show();
 
-        _loginButton.setEnabled(true);
+        loginButton.setEnabled(true);
     }
 
     public boolean validate() {
         boolean valid = true;
 
-        String email = _emailText.getText().toString();
-        String password = _passwordText.getText().toString();
+        String usuario = usuarioText.getText().toString();
+        String password = passwordText.getText().toString();
 
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
+        if (usuario.isEmpty()) {
+            usuarioText.setError("Escriba el numbre de usuario");
             valid = false;
         } else {
-            _emailText.setError(null);
+            usuarioText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            passwordText.setError("La contraseña debe tener entre 4 y 10 caracteres");
             valid = false;
         } else {
-            _passwordText.setError(null);
+            passwordText.setError(null);
         }
 
         return valid;
     }
-
-
-
 }
 

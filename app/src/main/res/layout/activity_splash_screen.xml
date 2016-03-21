@@ -14,13 +14,13 @@
         android:textColor="#FFF"
         android:textAlignment="center"
         android:layout_gravity="center|bottom"
-        android:layout_marginBottom="100px"
-        android:textSize="70px"/>
+        android:layout_marginBottom="100dp"
+        android:textSize="40dp"/>
 
     <FrameLayout
-        android:layout_width="500px"
+        android:layout_width="200dp"
         android:layout_gravity="center"
-        android:layout_height="472px"
+        android:layout_height="172dp"
         android:fitsSystemWindows="true"
         android:background="@drawable/logo_upiita">
 
