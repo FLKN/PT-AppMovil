@@ -17,11 +17,11 @@ import butterknife.InjectView;
 
 public class Login extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
+    private static final int REQUEST_SIGNUP  = 0;
 
     @InjectView(R.id.usuario) EditText usuarioText;
     @InjectView(R.id.password) EditText passwordText;
-    @InjectView(R.id.email_sign_in_button) Button loginButton;
+    @InjectView(R.id.btn_signin) Button loginButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
