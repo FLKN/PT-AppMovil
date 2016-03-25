@@ -2,6 +2,8 @@ package com.ptappmovil.upiita.pt_appmovil;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Animatable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,7 +19,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.*;
 import android.graphics.*;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,15 +32,23 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.v("FONTS", getAssets().toString());
-        Typeface fontfamily = Typeface.createFromAsset(getAssets(),"fonts/fontawesome.ttf");
-        TextView icono = (TextView)findViewById(R.id.icono);
-        icono.setTypeface(fontfamily);
-        icono.setText("\uf030");
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
+        Button btn_control = (Button) findViewById(R.id.icon_control);
+        Button btn_agenda = (Button) findViewById(R.id.icon_agenda);
+        Button btn_servicios = (Button) findViewById(R.id.icon_servicios);
+
+        Typeface fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome.ttf");
+
+        btn_control.setTypeface(fontawesome);
+        btn_control.setText("\uf236 \n Control de la Habitación");
+        btn_agenda.setTypeface(fontawesome);
+        btn_agenda.setText("\uf278 \n Agenda de Visitas");
+        btn_servicios.setTypeface(fontawesome);
+        btn_servicios.setText("\uf0f5 \n Servicio a la Habitación");
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -57,26 +71,20 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    public void doControl(View v) {
+        final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
+        v.startAnimation(animAlpha);
+
     }
+    public void doAgenda(View v) {
+        final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
+        v.startAnimation(animAlpha);
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    }
+    public void doServicios(View v) {
+        final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
+        v.startAnimation(animAlpha);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -103,4 +111,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
