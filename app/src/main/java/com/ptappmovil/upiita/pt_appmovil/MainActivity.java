@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,21 +29,35 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    // Variables de nombre de usuario y numero de habitacion
+    String nombre;
+    String habitacion;
+    int nivel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Obtener user del login
+        Bundle info =  getIntent().getExtras();
+        String user = info.getString("user");
+        /* Consulta usando user para obtener esta informacion */
+        nombre = "David Pérez Espino";
+        habitacion = "Habitacion 2";
+        nivel = 1;
 
+        // Apuntando a los botones para añadirles fuente
         Button btn_control = (Button) findViewById(R.id.icon_control);
         Button btn_agenda = (Button) findViewById(R.id.icon_agenda);
         Button btn_servicios = (Button) findViewById(R.id.icon_servicios);
 
+        // Agregando FontAwesome
         Typeface fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome.ttf");
 
+        // Agregando la fuente a los botones
         btn_control.setTypeface(fontawesome);
         btn_control.setText("\uf236 \n Control de la Habitación");
         btn_agenda.setTypeface(fontawesome);
@@ -50,15 +65,28 @@ public class MainActivity extends AppCompatActivity
         btn_servicios.setTypeface(fontawesome);
         btn_servicios.setText("\uf0f5 \n Servicio a la Habitación");
 
-
+        // Creando el Navigation Drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        // Se infla el nac_header_main para poder tener un View a cual apntar
+        View header = navigationView.getHeaderView(0);
+
+        // Apuntando TextViews para la informacion de usuario
+        TextView nombre_usuario = (TextView)header.findViewById(R.id.nombre);
+        TextView habitacion_usuario = (TextView)header.findViewById(R.id.habitacion);
+        Log.v("MainActivity","Apunte bien");
+        nombre_usuario.setText(this.nombre);
+        habitacion_usuario.setText(this.habitacion);
+        Log.v("MainActivity", "Inserte Bien");
+
+
     }
 
     @Override
@@ -71,11 +99,24 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // Listener del boton para control del cuarto
     public void doControl(View v) {
         final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
         v.startAnimation(animAlpha);
 
+        Bundle info = new Bundle();
+        info.putString("nombre", this.nombre);
+        info.putString("habitacion", this.habitacion);
+        info.putInt("nivel", this.nivel);
+        Intent control_intent = new Intent();
+        control_intent.setClass(MainActivity.this,ControlActivity.class);
+        control_intent.putExtras(info);
+        startActivity(control_intent);
+        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+
+
     }
+    // Listener del boton para hacer la agenda
     public void doAgenda(View v) {
         final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
         v.startAnimation(animAlpha);
@@ -93,19 +134,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
+        // Condicionales para identificar acciones del Navigataion Drawer
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

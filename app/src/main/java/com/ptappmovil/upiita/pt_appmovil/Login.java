@@ -63,7 +63,7 @@ public class Login extends AppCompatActivity {
                 public void run() {
                     //Este if debe de hacerse con la validacion de arriba
                     if( usuario.equals("david.perez") && password.equals("pass123") )
-                        onLoginSuccess();
+                        onLoginSuccess("david.perez");
                     else
                         onLoginFailed();
                     progressDialog.dismiss();
@@ -87,10 +87,11 @@ public class Login extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
+    public void onLoginSuccess(String user) {
         Toast.makeText(getBaseContext(), "Bienvenido", Toast.LENGTH_LONG).show();
 
         Intent main_intent = new Intent(this, MainActivity.class);
+        main_intent.putExtra("user",user);
         startActivity(main_intent);
 
 
