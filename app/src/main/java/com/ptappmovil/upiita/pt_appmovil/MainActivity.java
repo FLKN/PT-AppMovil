@@ -2,13 +2,7 @@ package com.ptappmovil.upiita.pt_appmovil;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.Animatable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,23 +10,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.content.*;
-import android.graphics.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     // Variables de nombre de usuario y numero de habitacion
-    String nombre;
-    String habitacion;
-    int nivel;
+    private String nombre;
+    private String habitacion;
+    private int nivel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +33,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // Obtener user del login
-        Bundle info =  getIntent().getExtras();
-        String user = info.getString("user");
+        Bundle user_info =  getIntent().getExtras();
+        String user = user_info.getString("user");
         /* Consulta usando user para obtener esta informacion */
         nombre = "David Pérez Espino";
         habitacion = "Habitacion 2";
@@ -59,7 +50,7 @@ public class MainActivity extends AppCompatActivity
 
         // Agregando la fuente a los botones
         btn_control.setTypeface(fontawesome);
-        btn_control.setText("\uf236 \n Control de la Habitación");
+        btn_control.setText("\uf236 \n Control de Habitación");
         btn_agenda.setTypeface(fontawesome);
         btn_agenda.setText("\uf278 \n Agenda de Visitas");
         btn_servicios.setTypeface(fontawesome);
@@ -81,11 +72,8 @@ public class MainActivity extends AppCompatActivity
         // Apuntando TextViews para la informacion de usuario
         TextView nombre_usuario = (TextView)header.findViewById(R.id.nombre);
         TextView habitacion_usuario = (TextView)header.findViewById(R.id.habitacion);
-        Log.v("MainActivity","Apunte bien");
         nombre_usuario.setText(this.nombre);
         habitacion_usuario.setText(this.habitacion);
-        Log.v("MainActivity", "Inserte Bien");
-
 
     }
 
@@ -104,13 +92,9 @@ public class MainActivity extends AppCompatActivity
         final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
         v.startAnimation(animAlpha);
 
-        Bundle info = new Bundle();
-        info.putString("nombre", this.nombre);
-        info.putString("habitacion", this.habitacion);
-        info.putInt("nivel", this.nivel);
         Intent control_intent = new Intent();
         control_intent.setClass(MainActivity.this,ControlActivity.class);
-        control_intent.putExtras(info);
+        control_intent.putExtra("nivel",this.nivel);
         startActivity(control_intent);
         overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
 

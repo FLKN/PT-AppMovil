@@ -18,6 +18,8 @@
         android:background="@color/white"
         android:textSize="40dp"
         android:onClick="doControl" />
+
+
     <Button
         android:id="@+id/icon_agenda"
         android:layout_width="match_parent"
