@@ -19,8 +19,8 @@ import java.util.List;
 
 public class ControlActivity extends AppCompatActivity {
 
-    private ListView listView;
-    private int nivel;
+    private ListView sensor_listview;
+    private int level;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +31,14 @@ public class ControlActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.nivel = getIntent().getIntExtra("nivel",0);
-        Log.d("ControlActivity","Nivel "+this.nivel);
+        this.level = getIntent().getIntExtra("level",0);
+        Log.d("ControlActivity","level "+this.level);
 
-        this.listView = (ListView) findViewById(R.id.sensor_list);
+        this.sensor_listview = (ListView) findViewById(R.id.sensor_list);
 
         List items = new ArrayList();
 
-        if (this.nivel == 1) {
+        if (this.level == 1) {
             items.add(new SensorItem("Luz", 1));
             items.add(new SensorItem("Cerradura", 2));
             items.add(new SensorItem("Aire acondicionado", 3));
@@ -51,14 +51,38 @@ public class ControlActivity extends AppCompatActivity {
         }
 
 
-        this.listView.setAdapter(new SensorAdapter(items, this));
+        this.sensor_listview.setAdapter(new SensorAdapter(items, this));
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        sensor_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view,
                                     int position, long arg) {
 
-                Toast.makeText(getBaseContext(), "Sensor" + position, Toast.LENGTH_SHORT).show();
+                if (position == 0) {
+                    Intent control_intent = new Intent();
+                    control_intent.setClass(ControlActivity.this,LightActivity.class);
+                    startActivity(control_intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                }
+                /*if (position == 1) {
+                    Intent control_intent = new Intent();
+                    control_intent.setClass(ControlActivity.this,LockActivity.class);
+                    startActivity(control_intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                }
+                if (position == 2) {
+                    Intent control_intent = new Intent();
+                    control_intent.setClass(ControlActivity.this,AirActivity.class);
+                    startActivity(control_intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                }
+                if (position == 3) {
+                    Intent control_intent = new Intent();
+                    control_intent.setClass(ControlActivity.this,AccessActivity.class);
+                    startActivity(control_intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                }*/
+
             }
         });
     }

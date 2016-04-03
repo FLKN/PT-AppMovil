@@ -13,17 +13,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    // Variables de nombre de usuario y numero de habitacion
-    private String nombre;
-    private String habitacion;
-    private int nivel;
+    // Variables de name de usuario y numero de habitacion
+    private String name;
+    private String room;
+    private int level;
+
+    private ListView action_listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,25 +43,9 @@ public class MainActivity extends AppCompatActivity
         Bundle user_info =  getIntent().getExtras();
         String user = user_info.getString("user");
         /* Consulta usando user para obtener esta informacion */
-        nombre = "David Pérez Espino";
-        habitacion = "Habitacion 2";
-        nivel = 1;
-
-        // Apuntando a los botones para añadirles fuente
-        Button btn_control = (Button) findViewById(R.id.icon_control);
-        Button btn_agenda = (Button) findViewById(R.id.icon_agenda);
-        Button btn_servicios = (Button) findViewById(R.id.icon_servicios);
-
-        // Agregando FontAwesome
-        Typeface fontawesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome.ttf");
-
-        // Agregando la fuente a los botones
-        btn_control.setTypeface(fontawesome);
-        btn_control.setText("\uf236 \n Control de Habitación");
-        btn_agenda.setTypeface(fontawesome);
-        btn_agenda.setText("\uf278 \n Agenda de Visitas");
-        btn_servicios.setTypeface(fontawesome);
-        btn_servicios.setText("\uf0f5 \n Servicio a la Habitación");
+        name = "David Pérez Espino";
+        room = "room 2";
+        level = 1;
 
         // Creando el Navigation Drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -70,10 +61,54 @@ public class MainActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
 
         // Apuntando TextViews para la informacion de usuario
-        TextView nombre_usuario = (TextView)header.findViewById(R.id.nombre);
-        TextView habitacion_usuario = (TextView)header.findViewById(R.id.habitacion);
-        nombre_usuario.setText(this.nombre);
-        habitacion_usuario.setText(this.habitacion);
+        TextView name_user = (TextView)header.findViewById(R.id.name);
+        TextView room_user = (TextView)header.findViewById(R.id.room);
+        name_user.setText(this.name);
+        room_user.setText(this.room);
+
+        this.action_listview = (ListView) findViewById(R.id.action_list);
+
+        List items = new ArrayList();
+
+        items.add(new ActionItem("\uf236", "Control de Habitación"));
+        items.add(new ActionItem("\uf278","Agenda de Visitas"));
+        items.add(new ActionItem("\uf0f5","Servicio al Cuarto"));
+
+
+        this.action_listview.setAdapter(new ActionAdapter(this, items));
+
+        action_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view,
+                                    int position, long arg) {
+
+                final Animation animAlpha = AnimationUtils.loadAnimation(getBaseContext(),R.anim.anim_alpha);
+                view.startAnimation(animAlpha);
+
+                if (position == 0){
+                    Intent control_intent = new Intent();
+                    control_intent.setClass(MainActivity.this,ControlActivity.class);
+                    control_intent.putExtra("level",level);
+                    startActivity(control_intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                }
+                else if (position == 1){
+                    /*Intent control_intent = new Intent();
+                    control_intent.setClass(MainActivity.this,ControlActivity.class);
+                    control_intent.putExtra("level",level);
+                    startActivity(control_intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);*/
+                }
+                else if (position == 2){
+                    /*Intent control_intent = new Intent();
+                    control_intent.setClass(MainActivity.this,ControlActivity.class);
+                    control_intent.putExtra("level",level);
+                    startActivity(control_intent);
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);*/
+                }
+
+            }
+        });
 
     }
 
@@ -87,30 +122,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    // Listener del boton para control del cuarto
-    public void doControl(View v) {
-        final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
-        v.startAnimation(animAlpha);
 
-        Intent control_intent = new Intent();
-        control_intent.setClass(MainActivity.this,ControlActivity.class);
-        control_intent.putExtra("nivel",this.nivel);
-        startActivity(control_intent);
-        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-
-
-    }
-    // Listener del boton para hacer la agenda
-    public void doAgenda(View v) {
-        final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
-        v.startAnimation(animAlpha);
-
-    }
-    public void doServicios(View v) {
-        final Animation animAlpha = AnimationUtils.loadAnimation(this,R.anim.anim_alpha);
-        v.startAnimation(animAlpha);
-
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

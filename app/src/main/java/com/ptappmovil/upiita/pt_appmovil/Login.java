@@ -19,8 +19,8 @@ public class Login extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP  = 0;
 
-    @InjectView(R.id.usuario) EditText usuarioText;
-    @InjectView(R.id.password) EditText passwordText;
+    @InjectView(R.id.user_text) EditText userText;
+    @InjectView(R.id.password_text) EditText passwordText;
     @InjectView(R.id.btn_signin) Button loginButton;
 
     @Override
@@ -53,16 +53,15 @@ public class Login extends AppCompatActivity {
         progressDialog.setMessage("Iniciando Sesión...");
         progressDialog.show();
 
-        final String usuario = usuarioText.getText().toString();
+        final String user = userText.getText().toString();
         final String password = passwordText.getText().toString();
-
         //Aqui se conecta a la BD para verificar los datos
 
         new android.os.Handler().postDelayed(
             new Runnable() {
                 public void run() {
                     //Este if debe de hacerse con la validacion de arriba
-                    if( usuario.equals("david.perez") && password.equals("pass123") )
+                    if( user.equals("david.perez") && password.equals("pass123") )
                         onLoginSuccess("david.perez");
                     else
                         onLoginFailed();
@@ -109,14 +108,14 @@ public class Login extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String usuario = usuarioText.getText().toString();
+        String usuario = userText.getText().toString();
         String password = passwordText.getText().toString();
 
         if (usuario.isEmpty()) {
-            usuarioText.setError("Escriba el numbre de usuario");
+            userText.setError("Escriba el numbre de usuario");
             valid = false;
         } else {
-            usuarioText.setError(null);
+            userText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {

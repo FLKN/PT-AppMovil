@@ -43,12 +43,12 @@ public class SensorAdapter extends BaseAdapter {
             // Create a new view into the list.
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = inflater.inflate(R.layout.list_sensores, parent, false);
+            rowView = inflater.inflate(R.layout.list_sensors, parent, false);
         }
 
         // Set data into the view.
         TextView sensor_icon = (TextView) rowView.findViewById(R.id.sensor_icon);
-        TextView sensor_nombre = (TextView) rowView.findViewById(R.id.sensor_text);
+        TextView sensor_name = (TextView) rowView.findViewById(R.id.sensor_text);
 
         // Agregando FontAwesome
         Typeface fontawesome = Typeface.createFromAsset(rowView.getContext().getAssets(),"fonts/fontawesome.ttf");
@@ -71,8 +71,7 @@ public class SensorAdapter extends BaseAdapter {
             case 4: sensor_icon.setText("\uf1ad");
                 break;
         }
-        sensor_nombre.setText(item.getSensor_nombre());
-
+        sensor_name.setText(item.getSensor_name());
 
         return rowView;
     }
