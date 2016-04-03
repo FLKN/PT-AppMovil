@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,15 +12,28 @@
     tools:context="com.ptappmovil.upiita.pt_appmovil.LightActivity"
     tools:showIn="@layout/activity_light">
 
-    <com.triggertrap.seekarc.SeekArc
-        android:id="@+id/seekArc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="30dp"
-        seekarc:rotation="180"
-        seekarc:startAngle="30"
-        seekarc:sweepAngle="300"
-        seekarc:touchInside="true" />
+    <com.jesusm.holocircleseekbar.lib.HoloCircleSeekBar
+        android:id="@+id/light_picker"
+        android:layout_width="285dp"
+        android:layout_height="290dp"
+        app:max="100"
+        app:pointer_color="@color/colorPrimaryDark"
+        app:pointer_halo_color="#77030303"
+        app:pointer_size="20dp"
+        app:text_color="@color/black_overlay"
+        app:text_size="65sp"
+        app:wheel_unactive_color="@color/colorAccent"
+        app:wheel_active_color="@color/colorPrimary"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
-</ListView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:id="@+id/light_text"
+        android:layout_marginBottom="32dp"
+        android:layout_above="@+id/light_picker"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

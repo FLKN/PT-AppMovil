@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="160dp"
     android:orientation="vertical">
 
     <TextView
@@ -9,12 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:gravity="center"
-        android:textSize="40dp"/>
+        android:textSize="60dp" />
 
     <TextView
         android:id="@+id/action_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textIsSelectable="false" />
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textIsSelectable="false"
+        android:paddingBottom="20dp"/>
 
 </LinearLayout>
