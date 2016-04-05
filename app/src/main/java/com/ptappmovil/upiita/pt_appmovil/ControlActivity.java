@@ -64,7 +64,7 @@ public class ControlActivity extends AppCompatActivity {
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
-                /*if (position == 1) {
+                if (position == 1) {
                     Intent control_intent = new Intent();
                     control_intent.setClass(ControlActivity.this,LockActivity.class);
                     startActivity(control_intent);
@@ -81,7 +81,7 @@ public class ControlActivity extends AppCompatActivity {
                     control_intent.setClass(ControlActivity.this,AccessActivity.class);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                }*/
+                }
 
             }
         });

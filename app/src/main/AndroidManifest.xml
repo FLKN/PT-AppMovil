@@ -31,10 +31,22 @@
         <activity
             android:name=".ControlActivity"
             android:label="@string/title_activity_control"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LightActivity"
             android:label="@string/title_activity_light"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LockActivity"
+            android:label="@string/title_activity_lock"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AirActivity"
+            android:label="@string/title_activity_air"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AccessActivity"
+            android:label="@string/title_activity_access"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
