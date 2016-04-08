@@ -46,7 +46,7 @@ public class LightActivity extends AppCompatActivity {
                 intensity = holoCircleSeekBar.getValue();
                 // Actualizar base con intensity
 
-                light_label.setText("Luminosidad: " + intensity);
+                light_label.setText("Luminosidad: " + intensity + "%");
             }
         });
 
