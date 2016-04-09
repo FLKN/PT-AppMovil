@@ -9,8 +9,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+
+import com.jesusm.holocircleseekbar.lib.HoloCircleSeekBar;
 
 public class AirActivity extends AppCompatActivity {
+
+    private float intensity;
+    private HoloCircleSeekBar air_intensity;
+    private TextView air_label;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +27,33 @@ public class AirActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Obtener valor con consulta
+        intensity = (float)19.5;
+
+        air_intensity = (HoloCircleSeekBar) findViewById(R.id.air_picker);
+        air_intensity.setValue(intensity);
+
+        air_label = (TextView)findViewById(R.id.air_text);
+        air_label.setText("Luminosidad: " + intensity);
+
+        air_intensity.setOnSeekBarChangeListener(new HoloCircleSeekBar.OnCircleSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(HoloCircleSeekBar holoCircleSeekBar, int i, boolean b) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(HoloCircleSeekBar holoCircleSeekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(HoloCircleSeekBar holoCircleSeekBar) {
+                intensity = holoCircleSeekBar.getValue();
+                // Actualizar base con intensity
+
+                air_label.setText("Nivel: " + intensity);
+            }
+        });
 
     }
 

@@ -16,7 +16,7 @@ import com.jesusm.holocircleseekbar.lib.HoloCircleSeekBar;
 
 public class LightActivity extends AppCompatActivity {
 
-    private float intensity;
+    private float lumen;
     private HoloCircleSeekBar light_intensity;
     private TextView light_label;
     @Override
@@ -29,13 +29,13 @@ public class LightActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Obtener valor con consulta
-        intensity = (float)19.5;
+        lumen = (float)19.5;
 
         light_intensity = (HoloCircleSeekBar) findViewById(R.id.light_picker);
-        light_intensity.setValue(intensity);
+        light_intensity.setValue(lumen);
 
         light_label = (TextView)findViewById(R.id.light_text);
-        light_label.setText("Luminosidad: " + intensity);
+        light_label.setText("Luminosidad: " + lumen);
 
         light_intensity.setOnSeekBarChangeListener(new HoloCircleSeekBar.OnCircleSeekBarChangeListener() {
             @Override
@@ -46,10 +46,10 @@ public class LightActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(HoloCircleSeekBar holoCircleSeekBar) {
-                intensity = holoCircleSeekBar.getValue();
+                lumen = holoCircleSeekBar.getValue();
                 // Actualizar base con intensity
 
-                light_label.setText("Luminosidad: " + intensity + "%");
+                light_label.setText("Luminosidad: " + lumen + "%");
             }
         });
 
