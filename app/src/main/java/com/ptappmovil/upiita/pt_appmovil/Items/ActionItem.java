@@ -1,4 +1,4 @@
-package com.ptappmovil.upiita.pt_appmovil;
+package com.ptappmovil.upiita.pt_appmovil.Items;
 
 public class ActionItem {
     private String action_icon;

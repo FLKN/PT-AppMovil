@@ -21,8 +21,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_control">Controles del cuarto</string>
     <string name="title_activity_light">Luz</string>
-    <string name="title_activity_lock">LockActivity</string>
-    <string name="title_activity_air">AirActivity</string>
-    <string name="title_activity_access">AccessActivity</string>
+    <string name="title_activity_lock">Cerradura</string>
+    <string name="title_activity_air">Aire Acondicionado</string>
+    <string name="title_activity_access">Estado de Accesos</string>
 
 </resources>

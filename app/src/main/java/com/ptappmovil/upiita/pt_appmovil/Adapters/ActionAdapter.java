@@ -1,4 +1,4 @@
-package com.ptappmovil.upiita.pt_appmovil;
+package com.ptappmovil.upiita.pt_appmovil.Adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.ptappmovil.upiita.pt_appmovil.Items.ActionItem;
+import com.ptappmovil.upiita.pt_appmovil.R;
 
 import java.util.List;
 

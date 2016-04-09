@@ -12,4 +12,25 @@
     tools:context="com.ptappmovil.upiita.pt_appmovil.LockActivity"
     tools:showIn="@layout/activity_lock">
 
+    <Switch
+        android:id="@+id/lock_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textOn="On"
+        android:textColor="#000"
+        android:thumb="@drawable/customswitchselector"
+        android:track="@drawable/custom_track"
+        android:textOff="Off"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:id="@+id/lock_text"
+        android:layout_marginBottom="70dp"
+        android:layout_above="@+id/lock_switch"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
