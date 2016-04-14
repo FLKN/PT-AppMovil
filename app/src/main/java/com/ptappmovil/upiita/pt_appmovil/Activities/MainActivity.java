@@ -1,4 +1,4 @@
-package com.ptappmovil.upiita.pt_appmovil;
+package com.ptappmovil.upiita.pt_appmovil.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.ptappmovil.upiita.pt_appmovil.Adapters.ActionAdapter;
 import com.ptappmovil.upiita.pt_appmovil.Items.ActionItem;
+import com.ptappmovil.upiita.pt_appmovil.R;
 
 import java.util.ArrayList;
 import java.util.List;

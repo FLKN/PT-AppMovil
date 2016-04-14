@@ -5,6 +5,11 @@ repositories {
         url "https://jitpack.io"
     }
 }
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
 
 android {
     compileSdkVersion 23
@@ -33,6 +38,8 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.jakewharton:butterknife:6.1.0'
     compile 'com.github.JesusM:HoloCircleSeekBar:v2.2.2'
+    compile 'com.microsoft.azure:azure-mobile-services-android-sdk:2.0.3'
+
 }
 
 

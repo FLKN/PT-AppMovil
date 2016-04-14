@@ -1,4 +1,4 @@
-package com.ptappmovil.upiita.pt_appmovil;
+package com.ptappmovil.upiita.pt_appmovil.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.ptappmovil.upiita.pt_appmovil.R;
 
 public class LockActivity extends AppCompatActivity {
 

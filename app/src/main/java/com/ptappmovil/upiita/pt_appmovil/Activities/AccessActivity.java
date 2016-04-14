@@ -1,4 +1,4 @@
-package com.ptappmovil.upiita.pt_appmovil;
+package com.ptappmovil.upiita.pt_appmovil.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageSwitcher;
 import android.widget.ViewSwitcher;
+
+import com.ptappmovil.upiita.pt_appmovil.R;
 
 public class AccessActivity extends AppCompatActivity {
 

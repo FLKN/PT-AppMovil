@@ -9,8 +9,9 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ptappmovil.upiita.pt_appmovil.Activities.MainActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

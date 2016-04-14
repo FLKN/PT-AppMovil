@@ -8,8 +8,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <uses-permission android:name="android.permission.INTERNET" />
+
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -29,23 +32,23 @@
             android:name=".Login"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".ControlActivity"
+            android:name=".Activities.ControlActivity"
             android:label="@string/title_activity_control"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LightActivity"
+            android:name=".Activities.LightActivity"
             android:label="@string/title_activity_light"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".LockActivity"
+            android:name=".Activities.LockActivity"
             android:label="@string/title_activity_lock"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AirActivity"
+            android:name=".Activities.AirActivity"
             android:label="@string/title_activity_air"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AccessActivity"
+            android:name=".Activities.AccessActivity"
             android:label="@string/title_activity_access"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
