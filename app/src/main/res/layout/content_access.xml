@@ -28,7 +28,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:inAnimation="@anim/anim_fade_in"
+            android:outAnimation="@anim/anim_fade_out">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -63,7 +65,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:inAnimation="@anim/anim_fade_in"
+            android:outAnimation="@anim/anim_fade_out">
 
             <ImageView
                 android:layout_width="match_parent"

@@ -95,17 +95,17 @@ public class MainActivity extends AppCompatActivity
                 }
                 else if (position == 1){
                     /*Intent control_intent = new Intent();
-                    control_intent.setClass(MainActivity.this,ControlActivity.class);
+                    control_intent.setClass(MainActivity.this,AgendaActivity.class);
                     control_intent.putExtra("level",level);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);*/
                 }
                 else if (position == 2){
-                    /*Intent control_intent = new Intent();
-                    control_intent.setClass(MainActivity.this,ControlActivity.class);
+                    Intent control_intent = new Intent();
+                    control_intent.setClass(MainActivity.this,ServiceActivity.class);
                     control_intent.putExtra("level",level);
                     startActivity(control_intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);*/
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
 
             }

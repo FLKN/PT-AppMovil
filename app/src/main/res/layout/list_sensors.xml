@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="120dp"
     android:orientation="horizontal">
 
     <TextView
@@ -9,12 +9,12 @@
         android:layout_width="90dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:gravity="center|center_horizontal"
+        android:gravity="center_vertical|center_horizontal"
         android:textSize="50dp"
         android:paddingBottom="20dp"/>
 
     <TextView
-        android:gravity="center|center_horizontal"
+        android:gravity="center_vertical|center_horizontal"
         android:id="@+id/sensor_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
