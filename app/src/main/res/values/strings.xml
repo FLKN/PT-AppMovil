@@ -25,6 +25,6 @@
     <string name="title_activity_air">Aire Acondicionado</string>
     <string name="title_activity_access">Estado de Accesos</string>
     <string name="title_activity_service">Servicio al Cuarto</string>
-    <string name="title_activity_order">OrderActivity</string>
+    <string name="title_activity_order">Confirmar Orden</string>
 
 </resources>
