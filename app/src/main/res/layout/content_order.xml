@@ -12,4 +12,50 @@
     tools:context=".Activities.OrderActivity"
     tools:showIn="@layout/activity_order">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirma tu orden"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:textSize="35sp"/>
+
+    <TextView
+        android:id="@+id/order_box"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:padding="5dp"
+        android:lineSpacingExtra="3dp"
+        android:background="@drawable/tv_border"
+        android:layout_marginTop="35dp"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmar"
+        android:layout_marginTop="34dp"
+        android:onClick="confirmOrder"
+        android:layout_below="@+id/order_count"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1221"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:id="@+id/order_count"
+        android:layout_below="@+id/order_box"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" />
+
+
 </RelativeLayout>

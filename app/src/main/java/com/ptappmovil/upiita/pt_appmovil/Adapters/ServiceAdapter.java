@@ -52,12 +52,14 @@ public class ServiceAdapter extends BaseAdapter{
         }
 
         // Set data into the view.
+        TextView dish_id = (TextView) rowView.findViewById(R.id.dish_id);
         ImageView dish_image = (ImageView) rowView.findViewById(R.id.dish_image);
         TextView dish_name = (TextView) rowView.findViewById(R.id.dish_name);
         TextView dish_cost = (TextView) rowView.findViewById(R.id.dish_cost);
 
         ServiceItem item = this.items.get(position);
 
+        dish_id.setText(item.getDish_id());
         dish_image.setImageBitmap(item.getDish_image());
         dish_name.setText(item.getDish_name());
         dish_cost.setText(item.getDish_cost());
