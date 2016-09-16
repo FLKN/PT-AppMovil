@@ -1,6 +1,7 @@
 package com.ptappmovil.upiita.pt_appmovil;
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -13,6 +14,15 @@ import android.widget.Toast;
 
 import com.ptappmovil.upiita.pt_appmovil.Activities.MainActivity;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -23,6 +33,9 @@ public class Login extends AppCompatActivity {
     @InjectView(R.id.user_text) EditText userText;
     @InjectView(R.id.password_text) EditText passwordText;
     @InjectView(R.id.btn_signin) Button loginButton;
+
+    private ProgressDialog progressDialog;
+    JSONObject jsonResponse;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,33 +56,20 @@ public class Login extends AppCompatActivity {
         Log.d(TAG, "Login");
 
         if (!validate()) {
-            onLoginFailed();
+            onLoginFailed("Ocurrio un problema, intente otra vez");
             return;
         }
 
         loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(Login.this, R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Iniciando Sesión...");
-        progressDialog.show();
 
         final String user = userText.getText().toString();
         final String password = passwordText.getText().toString();
-        //Aqui se conecta a la BD para verificar los datos
 
-        new android.os.Handler().postDelayed(
-            new Runnable() {
-                public void run() {
-                    //Este if debe de hacerse con la validacion de arriba
-                    if( user.equals("david.perez") && password.equals("pass123") )
-                        onLoginSuccess("david.perez");
-                    else
-                        onLoginFailed();
-                    progressDialog.dismiss();
-                }
-            }, 3000
-        );
+        //JSONObject json = this.doLogin(user,password);
+        LoginRequest make_login = new LoginRequest();
+        make_login.execute(user, password);
+
     }
 
     @Override
@@ -87,21 +87,18 @@ public class Login extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess(String user) {
-        Toast.makeText(getBaseContext(), "Bienvenido", Toast.LENGTH_LONG).show();
+    public void onLoginSuccess(String msg, String user) {
+        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
 
         Intent main_intent = new Intent(this, MainActivity.class);
         main_intent.putExtra("user",user);
         startActivity(main_intent);
 
-
-
-
         finish();
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Ocurrió un error", Toast.LENGTH_LONG).show();
+    public void onLoginFailed(String msg) {
+        Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
 
         loginButton.setEnabled(true);
     }
@@ -128,5 +125,70 @@ public class Login extends AppCompatActivity {
 
         return valid;
     }
+
+    private class LoginRequest extends AsyncTask<String, String, JSONObject> {
+
+        protected void onPreExecute(){
+            progressDialog = new ProgressDialog(Login.this, R.style.AppTheme_Dark_Dialog);
+            progressDialog.setMessage("Iniciando Sesión...");
+            progressDialog.show();
+        }
+
+        protected JSONObject doInBackground(String... params) {
+
+            JSONObject resul = null;
+
+            HttpClient httpClient = new DefaultHttpClient();
+
+            HttpPost post = new HttpPost("http://ptserver.southcentralus.cloudapp.azure.com:9090/login");
+            post.setHeader("content-type", "application/json");
+
+            try
+            {
+                //Construimos el objeto cliente en formato JSON
+                JSONObject dato = new JSONObject();
+
+                //dato.put("Id", Integer.parseInt(txtId.getText().toString()));
+                dato.put("user_name", params[0]);
+                dato.put("password", params[1]);
+
+                StringEntity entity = new StringEntity(dato.toString());
+                post.setEntity(entity);
+
+                HttpResponse resp = httpClient.execute(post);
+                String respStr = EntityUtils.toString(resp.getEntity());
+
+
+                progressDialog.dismiss();
+
+                if(!respStr.equals("true"))
+                    resul = new JSONObject(respStr);
+            }
+            catch(Exception ex)
+            {
+                Log.e("ServicioRest","Error!", ex);
+                resul = null;
+            }
+
+            return resul;
+
+
+        }
+
+
+        protected void onPostExecute(JSONObject result) {
+            super.onPostExecute(result);
+
+            try {
+                if(result.getBoolean("authorized"))
+                    onLoginSuccess(result.getString("msg"), userText.getText().toString());
+                else
+                    onLoginFailed(result.getString("msg"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
 
