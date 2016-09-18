@@ -62,27 +62,25 @@ public class ControlActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapter, View view,
                                     int position, long arg) {
 
+                Intent control_intent = new Intent();
+                control_intent.putExtra("room",room);
+
                 if (position == 0) {
-                    Intent control_intent = new Intent();
-                    control_intent.putExtra("room",room);
                     control_intent.setClass(ControlActivity.this,LightActivity.class);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
                 if (position == 1) {
-                    Intent control_intent = new Intent();
                     control_intent.setClass(ControlActivity.this,LockActivity.class);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
                 if (position == 2) {
-                    Intent control_intent = new Intent();
                     control_intent.setClass(ControlActivity.this,AirActivity.class);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
                 if (position == 3) {
-                    Intent control_intent = new Intent();
                     control_intent.setClass(ControlActivity.this,AccessActivity.class);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
