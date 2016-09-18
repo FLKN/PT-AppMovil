@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity
 
     // Variables de name de usuario y numero de habitacion
     private String name;
-    private String room;
+    private int room;
     private int level;
 
     private ListView action_listview;
@@ -42,11 +42,9 @@ public class MainActivity extends AppCompatActivity
 
         // Obtener user del login
         Bundle user_info =  getIntent().getExtras();
-        String user = user_info.getString("user");
-        /* Consulta usando user para obtener esta informacion */
-        name = "David Pérez Espino";
-        room = "room 2";
-        level = 1;
+        name = user_info.getString("user");
+        room = user_info.getInt("room");
+        level = user_info.getInt("level");
 
         // Creando el Navigation Drawer
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -62,10 +60,10 @@ public class MainActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
 
         // Apuntando TextViews para la informacion de usuario
-        TextView name_user = (TextView)header.findViewById(R.id.name);
-        TextView room_user = (TextView)header.findViewById(R.id.room);
+        TextView name_user = (TextView)header.findViewById(R.id.nav_name);
+        TextView room_user = (TextView)header.findViewById(R.id.nav_room);
         name_user.setText(this.name);
-        room_user.setText(this.room);
+        room_user.setText("Cuarto: " + this.room);
 
         this.action_listview = (ListView) findViewById(R.id.action_list);
 
@@ -90,6 +88,7 @@ public class MainActivity extends AppCompatActivity
                     Intent control_intent = new Intent();
                     control_intent.setClass(MainActivity.this,ControlActivity.class);
                     control_intent.putExtra("level",level);
+                    control_intent.putExtra("room",room);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }

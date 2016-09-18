@@ -23,6 +23,7 @@ public class ControlActivity extends AppCompatActivity {
 
     private ListView sensor_listview;
     private int level;
+    private int room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,9 @@ public class ControlActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.level = getIntent().getIntExtra("level",0);
-        Log.d("ControlActivity","level "+this.level);
+        Bundle control_info =  getIntent().getExtras();
+        this.level = control_info.getInt("level");
+        this.room = control_info.getInt("room");
 
         this.sensor_listview = (ListView) findViewById(R.id.sensor_list);
 
@@ -62,6 +64,7 @@ public class ControlActivity extends AppCompatActivity {
 
                 if (position == 0) {
                     Intent control_intent = new Intent();
+                    control_intent.putExtra("room",room);
                     control_intent.setClass(ControlActivity.this,LightActivity.class);
                     startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);

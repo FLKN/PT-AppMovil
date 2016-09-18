@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ptappmovil.upiita.pt_appmovil.Activities.MainActivity;
@@ -35,7 +36,6 @@ public class Login extends AppCompatActivity {
     @InjectView(R.id.btn_signin) Button loginButton;
 
     private ProgressDialog progressDialog;
-    JSONObject jsonResponse;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,11 +87,13 @@ public class Login extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess(String msg, String user) {
+    public void onLoginSuccess(String msg, String user, int room, int level) {
         Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
 
         Intent main_intent = new Intent(this, MainActivity.class);
         main_intent.putExtra("user",user);
+        main_intent.putExtra("room",room);
+        main_intent.putExtra("level",level);
         startActivity(main_intent);
 
         finish();
@@ -148,16 +150,14 @@ public class Login extends AppCompatActivity {
                 //Construimos el objeto cliente en formato JSON
                 JSONObject dato = new JSONObject();
 
-                //dato.put("Id", Integer.parseInt(txtId.getText().toString()));
                 dato.put("user_name", params[0]);
-                dato.put("password", params[1]);
+                dato.put("app_pass", params[1]);
 
                 StringEntity entity = new StringEntity(dato.toString());
                 post.setEntity(entity);
 
                 HttpResponse resp = httpClient.execute(post);
                 String respStr = EntityUtils.toString(resp.getEntity());
-
 
                 progressDialog.dismiss();
 
@@ -171,17 +171,14 @@ public class Login extends AppCompatActivity {
             }
 
             return resul;
-
-
         }
-
 
         protected void onPostExecute(JSONObject result) {
             super.onPostExecute(result);
 
             try {
                 if(result.getBoolean("authorized"))
-                    onLoginSuccess(result.getString("msg"), userText.getText().toString());
+                    onLoginSuccess(result.getString("msg"), result.getString("name"), result.getInt("room"), result.getInt("level"));
                 else
                     onLoginFailed(result.getString("msg"));
             } catch (JSONException e) {
