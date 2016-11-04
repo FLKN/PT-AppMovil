@@ -161,3 +161,14 @@ Temporary Items
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
+.idea/.name
+
+.idea/.name
+
+.idea/encodings.xml
+
+.idea/gradle.xml
+
+.idea/misc.xml
+
+gradle/wrapper/gradle-wrapper.properties
