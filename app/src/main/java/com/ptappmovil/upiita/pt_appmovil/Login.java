@@ -1,7 +1,6 @@
 package com.ptappmovil.upiita.pt_appmovil;
 
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -10,19 +9,23 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.ptappmovil.upiita.pt_appmovil.Activities.MainActivity;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -63,13 +66,21 @@ public class Login extends AppCompatActivity {
         loginButton.setEnabled(false);
 
 
-        final String user = userText.getText().toString();
-        final String password = passwordText.getText().toString();
+        String user = userText.getText().toString();
+        String password = passwordText.getText().toString();
 
-        //JSONObject json = this.doLogin(user,password);
-        LoginRequest make_login = new LoginRequest();
-        make_login.execute(user, password);
+        try {
+            //Construimos el objeto cliente en formato JSON
+            JSONObject dato = new JSONObject();
 
+            dato.put("user_name", user);
+            dato.put("app_pass", password);
+
+            this.doLoginRequest(dato,"http://pt-backend.azurewebsites.net/login");
+
+        } catch(Exception ex) {
+            Log.d("Error","Error");
+        }
     }
 
     @Override
@@ -128,64 +139,49 @@ public class Login extends AppCompatActivity {
         return valid;
     }
 
-    private class LoginRequest extends AsyncTask<String, String, JSONObject> {
+    private void doLoginRequest(JSONObject params, String url) {
+        progressDialog = new ProgressDialog(Login.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setMessage("Iniciando Sesión...");
+        progressDialog.show();
 
-        protected void onPreExecute(){
-            progressDialog = new ProgressDialog(Login.this, R.style.AppTheme_Dark_Dialog);
-            progressDialog.setMessage("Iniciando Sesión...");
-            progressDialog.show();
-        }
+        RequestQueue queue = Volley.newRequestQueue(this);
+        // prepare the Request
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // display response
+                        Log.d("Response", response.toString());
+                        try {
+                            if(response.getBoolean("authorized"))
+                                onLoginSuccess(response.getString("msg"), response.getString("name"), response.getInt("room"), response.getInt("level"));
+                            else
+                                onLoginFailed(response.getString("msg"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        progressDialog.dismiss();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d(TAG, "Error: " + error.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(Login.this,error.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("Content-Type", "application/json; charset=utf-8");
+                        return headers;
+                    }
+        };
 
-        protected JSONObject doInBackground(String... params) {
-
-            JSONObject resul = null;
-
-            HttpClient httpClient = new DefaultHttpClient();
-
-            HttpPost post = new HttpPost("http://ptserver.southcentralus.cloudapp.azure.com:9090/login");
-            post.setHeader("content-type", "application/json");
-
-            try
-            {
-                //Construimos el objeto cliente en formato JSON
-                JSONObject dato = new JSONObject();
-
-                dato.put("user_name", params[0]);
-                dato.put("app_pass", params[1]);
-
-                StringEntity entity = new StringEntity(dato.toString());
-                post.setEntity(entity);
-
-                HttpResponse resp = httpClient.execute(post);
-                String respStr = EntityUtils.toString(resp.getEntity());
-
-                progressDialog.dismiss();
-
-                if(!respStr.equals("true"))
-                    resul = new JSONObject(respStr);
-            }
-            catch(Exception ex)
-            {
-                Log.e("ServicioRest","Error!", ex);
-                resul = null;
-            }
-
-            return resul;
-        }
-
-        protected void onPostExecute(JSONObject result) {
-            super.onPostExecute(result);
-
-            try {
-                if(result.getBoolean("authorized"))
-                    onLoginSuccess(result.getString("msg"), result.getString("name"), result.getInt("room"), result.getInt("level"));
-                else
-                    onLoginFailed(result.getString("msg"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+// add it to the RequestQueue
+        queue.add(getRequest);
     }
-
 }
 
