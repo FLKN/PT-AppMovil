@@ -63,9 +63,6 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-        loginButton.setEnabled(false);
-
-
         String user = userText.getText().toString();
         String password = passwordText.getText().toString();
 
@@ -113,7 +110,6 @@ public class Login extends AppCompatActivity {
     public void onLoginFailed(String msg) {
         Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
 
-        loginButton.setEnabled(true);
     }
 
     public boolean validate() {

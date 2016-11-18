@@ -73,6 +73,9 @@ public class SensorAdapter extends BaseAdapter {
             // Accesos
             case 4: sensor_icon.setText("\uf1ad");
                 break;
+            default:
+                sensor_icon.setText("");
+                break;
         }
         sensor_name.setText(item.getSensor_name());
 

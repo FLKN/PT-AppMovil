@@ -12,28 +12,52 @@
     tools:context=".Activities.AirActivity"
     tools:showIn="@layout/activity_air">
 
-    <com.jesusm.holocircleseekbar.lib.HoloCircleSeekBar
-        android:id="@+id/air_picker"
-        android:layout_width="285dp"
-        android:layout_height="290dp"
-        app:max="100"
-        app:pointer_color="@color/colorPrimaryDark"
-        app:pointer_halo_color="#77030303"
-        app:pointer_size="20dp"
-        app:text_color="@color/black_overlay"
-        app:text_size="65sp"
-        app:wheel_unactive_color="@color/colorAccent"
-        app:wheel_active_color="@color/colorPrimary"
-        android:layout_centerVertical="true"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:id="@+id/temperatuer_text"
+        android:text="Temperatura: -"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30dp"
-        android:id="@+id/air_text"
-        android:layout_marginBottom="32dp"
-        android:layout_above="@+id/air_picker"
+        android:id="@+id/intensity_text"
+        android:text="Intensidad: -"
+        android:layout_marginTop="14dp"
+        android:layout_below="@+id/temperatuer_text"
         android:layout_centerHorizontal="true" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/intensity_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="36dp" >
+
+        <RadioButton
+            android:text="Alto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButton"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButton2"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:text="RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioButton3"
+            android:layout_weight="1" />
+    </RadioGroup>
 
 </RelativeLayout>

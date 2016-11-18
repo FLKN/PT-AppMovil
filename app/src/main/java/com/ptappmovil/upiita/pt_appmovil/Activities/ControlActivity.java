@@ -42,13 +42,13 @@ public class ControlActivity extends AppCompatActivity {
 
         List items = new ArrayList();
 
-        if (this.level == 1) {
+        if (this.level == 3 || this.level == 1) {
             items.add(new SensorItem("Luz", 1));
             items.add(new SensorItem("Cerradura", 2));
             items.add(new SensorItem("Aire acondicionado", 3));
             items.add(new SensorItem("Accesos del cuarto", 4));
         }
-        else {
+        else if (this.level == 4){
             items.add(new SensorItem("Luz", 1));
             items.add(new SensorItem("Aire acondicionado", 3));
             items.add(new SensorItem("Accesos del cuarto", 4));
@@ -65,26 +65,47 @@ public class ControlActivity extends AppCompatActivity {
                 Intent control_intent = new Intent();
                 control_intent.putExtra("room",room);
 
-                if (position == 0) {
-                    control_intent.setClass(ControlActivity.this,LightActivity.class);
-                    startActivity(control_intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                if (level == 3 || level == 1) {
+                    if (position == 0) {
+                        control_intent.setClass(ControlActivity.this,LightActivity.class);
+                        startActivity(control_intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
+                    if (position == 1) {
+                        control_intent.setClass(ControlActivity.this,LockActivity.class);
+                        startActivity(control_intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
+                    if (position == 2) {
+                        control_intent.setClass(ControlActivity.this,AirActivity.class);
+                        startActivity(control_intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
+                    if (position == 3) {
+                        control_intent.setClass(ControlActivity.this,AccessActivity.class);
+                        startActivity(control_intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
                 }
-                if (position == 1) {
-                    control_intent.setClass(ControlActivity.this,LockActivity.class);
-                    startActivity(control_intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                else if (level == 4){
+                    if (position == 0) {
+                        control_intent.setClass(ControlActivity.this,LightActivity.class);
+                        startActivity(control_intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
+                    if (position == 1) {
+                        control_intent.setClass(ControlActivity.this,AirActivity.class);
+                        startActivity(control_intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
+                    if (position == 2) {
+                        control_intent.setClass(ControlActivity.this,AccessActivity.class);
+                        startActivity(control_intent);
+                        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    }
                 }
-                if (position == 2) {
-                    control_intent.setClass(ControlActivity.this,AirActivity.class);
-                    startActivity(control_intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                }
-                if (position == 3) {
-                    control_intent.setClass(ControlActivity.this,AccessActivity.class);
-                    startActivity(control_intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-                }
+
+
 
             }
         });
