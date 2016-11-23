@@ -14,21 +14,36 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.ptappmovil.upiita.pt_appmovil.Login;
 import com.ptappmovil.upiita.pt_appmovil.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OrderActivity extends AppCompatActivity {
 
     private TextView order_box;
     private TextView order_count;
 
-
     private ArrayList<Integer> order_ids;
     private ArrayList<String> order_list;
     private float order_cost;
+    private int room;
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +57,7 @@ public class OrderActivity extends AppCompatActivity {
         this.order_cost = getIntent().getFloatExtra("order_cost", 0);
         this.order_ids = getIntent().getIntegerArrayListExtra("order_ids");
         this.order_list = getIntent().getStringArrayListExtra("order_list");
+        this.room = getIntent().getIntExtra("room",0);
 
         this.order_box = (TextView)findViewById(R.id.order_box);
         this.order_count = (TextView)findViewById(R.id.order_count);
@@ -70,24 +86,49 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
-    public void confirmOrder(View v){
-        final ProgressDialog progressDialog = new ProgressDialog(OrderActivity.this, R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Procesando...");
+    public void doSetOrderRequest(JSONObject params, String url) {
+        progressDialog = new ProgressDialog(OrderActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setMessage("Enviando orden...");
         progressDialog.show();
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // Envio de ids para confirmar orden
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
 
                         progressDialog.dismiss();
+
                         OrderActivity.this.setResult(RESULT_OK, null);
                         OrderActivity.this.finish();
                         Toast.makeText(OrderActivity.this, "Orden confirmada", Toast.LENGTH_LONG).show();
                     }
-                }, 3000
-        );
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d("Error", "Error: " + error.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(OrderActivity.this,error.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+        queue.add(getRequest);
+    }
 
+    public void confirmOrder(View v){
+        JSONObject params = new JSONObject();
+        try {
+            params.put("room",room);
+            params.put("total",order_cost);
+            params.put("dishes",order_ids);
 
+            doSetOrderRequest(params,"http://pt-backend.azurewebsites.net/dishes/set_order");
+            //doSetOrderRequest(params,"http://192.168.1.68:3000/dishes/set_order");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -66,11 +66,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"/>
 
-                <ListView
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:id="@+id/service_listview"
-                    android:layout_gravity="center_vertical" />
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:id="@+id/service_listview"
+                android:layout_gravity="center_vertical" />
 
             <Button
                 android:layout_width="match_parent"

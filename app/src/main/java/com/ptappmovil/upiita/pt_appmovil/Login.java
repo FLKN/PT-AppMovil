@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -74,6 +75,7 @@ public class Login extends AppCompatActivity {
             dato.put("app_pass", password);
 
             this.doLoginRequest(dato,"http://pt-backend.azurewebsites.net/login");
+            //this.doLoginRequest(dato,"http://192.168.1.68:3000/login");
 
         } catch(Exception ex) {
             Log.d("Error","Error");
@@ -141,13 +143,13 @@ public class Login extends AppCompatActivity {
         progressDialog.show();
 
         RequestQueue queue = Volley.newRequestQueue(this);
-        // prepare the Request
+
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // display response
+
                         Log.d("Response", response.toString());
                         try {
                             if(response.getBoolean("authorized"))
@@ -175,8 +177,7 @@ public class Login extends AppCompatActivity {
                         return headers;
                     }
         };
-
-// add it to the RequestQueue
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(getRequest);
     }
 }

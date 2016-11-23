@@ -7,13 +7,11 @@ public class ServiceItem {
     private String dish_id;
     private String dish_name;
     private String dish_cost;
-    private Bitmap dish_image;
 
-    public ServiceItem(String dish_id, String dish_name, Bitmap dish_image, String dish_cost) {
+    public ServiceItem(String dish_id, String dish_name, String dish_cost) {
         this.dish_id = dish_id;
         this.dish_name = dish_name;
         this.dish_cost = dish_cost;
-        this.dish_image = dish_image;
     }
 
     public ServiceItem() {
@@ -25,14 +23,6 @@ public class ServiceItem {
 
     public void setDish_name(String dish_name) {
         this.dish_name = dish_name;
-    }
-
-    public Bitmap getDish_image() {
-        return dish_image;
-    }
-
-    public void setDish_image(Bitmap dish_image) {
-        this.dish_image = dish_image;
     }
 
     public String getDish_cost() {
