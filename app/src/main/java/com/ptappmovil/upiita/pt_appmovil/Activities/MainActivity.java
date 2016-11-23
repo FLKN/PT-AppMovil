@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ptappmovil.upiita.pt_appmovil.Adapters.ActionAdapter;
 import com.ptappmovil.upiita.pt_appmovil.Items.ActionItem;
@@ -93,11 +94,12 @@ public class MainActivity extends AppCompatActivity
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
                 else if (position == 1){
-                    /*Intent control_intent = new Intent();
-                    control_intent.setClass(MainActivity.this,AgendaActivity.class);
-                    control_intent.putExtra("level",level);
-                    startActivity(control_intent);
-                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);*/
+                    Toast.makeText(MainActivity.this,"Redirigiendo a Google Trips",Toast.LENGTH_LONG).show();
+                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.google.android.apps.travel.onthego");
+                    if (launchIntent != null) {
+                        startActivity(launchIntent);//null pointer check in case package name was not found
+                    }
+                    overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
                 else if (position == 2){
                     Intent control_intent = new Intent();
