@@ -1,10 +1,7 @@
 package com.ptappmovil.upiita.pt_appmovil.Activities;
 
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,28 +9,31 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jesusm.holocircleseekbar.lib.HoloCircleSeekBar;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.ptappmovil.upiita.pt_appmovil.R;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LightActivity extends AppCompatActivity {
+public class LightActivity extends AppCompatActivity implements View.OnClickListener{
 
     private float lumen;
     private int room;
 
-    private HoloCircleSeekBar light_intensity;
+    Button btn_off,btn_weak,btn_medium,btn_high;
     private TextView light_label;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,30 +47,30 @@ public class LightActivity extends AppCompatActivity {
         Bundle light_intent = getIntent().getExtras();
         room = light_intent.getInt("room");
 
-        light_intensity = (HoloCircleSeekBar) findViewById(R.id.light_picker);
 
         light_label = (TextView)findViewById(R.id.light_text);
 
-        LumenRequest get_lumen = new LumenRequest();
-        get_lumen.execute(new Integer(room));
+        btn_off = (Button) findViewById(R.id.btn_off);
+        btn_weak = (Button) findViewById(R.id.btn_weak);
+        btn_medium = (Button) findViewById(R.id.btn_medium);
+        btn_high = (Button) findViewById(R.id.btn_high);
 
-        light_intensity.setOnSeekBarChangeListener(new HoloCircleSeekBar.OnCircleSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(HoloCircleSeekBar holoCircleSeekBar, int i, boolean b) { }
+        btn_off.setOnClickListener(this);
+        btn_weak.setOnClickListener(this);
+        btn_medium.setOnClickListener(this);
+        btn_high.setOnClickListener(this);
 
-            @Override
-            public void onStartTrackingTouch(HoloCircleSeekBar holoCircleSeekBar) { }
-
-            @Override
-            public void onStopTrackingTouch(HoloCircleSeekBar holoCircleSeekBar) {
-                lumen = holoCircleSeekBar.getValue();
-                light_label.setText("Luminosidad: " + lumen + "%");
-
-                new LumenRefreshRequest(room,lumen).execute();
-            }
-        });
-
+        JSONObject params = new JSONObject();
+        try {
+            params.put("room",room);
+            doGetLightStatus("http://pt-backend.azurewebsites.net/sensors/get_light",params);
+            //doGetLightStatus("http://192.168.1.68:3000/sensors/get_light",params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,104 +90,158 @@ public class LightActivity extends AppCompatActivity {
         }
     }
 
-    private class LumenRequest extends AsyncTask<Integer, Integer, JSONObject> {
+    public void doGetLightStatus(String url, JSONObject params) {
+        progressDialog = new ProgressDialog(LightActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setMessage("Obteniendo estado...");
+        progressDialog.show();
 
-        protected JSONObject doInBackground(Integer... params) {
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-            JSONObject resul = null;
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
 
-            HttpClient httpClient = new DefaultHttpClient();
+                        progressDialog.dismiss();
 
-            HttpPost post = new HttpPost("http://ptserver.southcentralus.cloudapp.azure.com:9090/sensors/get_light");
-            post.setHeader("content-type", "application/json");
+                        String lumen = "";
+                        try {
+                            switch (response.getInt("lumen")) {
+                                case 0:
+                                    lumen = "Apagado";
+                                    btn_off.setEnabled(false);
+                                    break;
+                                case 1:
+                                    lumen = "Tenue";
+                                    btn_weak.setEnabled(false);
+                                    break;
+                                case 2:
+                                    lumen = "Medio";
+                                    btn_medium.setEnabled(false);
+                                    break;
+                                case 3:
+                                    lumen = "Alto";
+                                    btn_high.setEnabled(false);
+                                    break;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-            try {
-                JSONObject dato = new JSONObject();
-
-                dato.put("room", params[0].intValue());
-
-                StringEntity entity = new StringEntity(dato.toString());
-                post.setEntity(entity);
-
-                HttpResponse resp = httpClient.execute(post);
-                String respStr = EntityUtils.toString(resp.getEntity());
-
-                if(!respStr.equals("true"))
-                    resul = new JSONObject(respStr);
-            }
-            catch(Exception ex) {
-                Log.e("ServicioRest","Error!", ex);
-                resul = null;
-            }
-
-            return resul;
-        }
-
-        protected void onPostExecute(JSONObject result) {
-            super.onPostExecute(result);
-
-            try {
-                if(result.getBoolean("action")){
-                    light_intensity.setValue((float)result.getDouble("lumen"));
-                    light_label.setText("Luminosidad: " + result.getDouble("lumen") + "%");
-                }
-                else
-                    Toast.makeText(LightActivity.this,result.getString("msg"), Toast.LENGTH_SHORT).show();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+                        light_label.setText("Luminosidad: "+lumen);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d("Error", "Error: " + error.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(LightActivity.this,error.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(getRequest);
     }
 
-    private class LumenRefreshRequest extends AsyncTask<Void, Void, JSONObject> {
-        int room;
-        float lumen;
+    public void doSetLightStatus(String url, JSONObject params) {
+        progressDialog = new ProgressDialog(LightActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setMessage("Cambiando modo...");
+        progressDialog.show();
 
-        public LumenRefreshRequest(int room, float lumen) {
-            this.room = room;
-            this.lumen = lumen;
-        }
-        protected JSONObject doInBackground(Void... params) {
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-            JSONObject resul = null;
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
 
-            HttpClient httpClient = new DefaultHttpClient();
+                        progressDialog.dismiss();
 
-            HttpPost post = new HttpPost("http://ptserver.southcentralus.cloudapp.azure.com:9090/sensors/update_light");
-            post.setHeader("content-type", "application/json");
 
-            try {
-                JSONObject dato = new JSONObject();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d("Error", "Error: " + error.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(LightActivity.this,error.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(getRequest);
+    }
 
-                dato.put("room", room);
-                dato.put("lumen", lumen);
+    @Override
+    public void onClick(View v) {
+        JSONObject params = new JSONObject();
 
-                StringEntity entity = new StringEntity(dato.toString());
-                post.setEntity(entity);
+        switch (v.getId()) {
+            case R.id.btn_off:
+                light_label.setText("Luminosidad: Apagado");
+                btn_off.setEnabled(false);
+                btn_weak.setEnabled(true);
+                btn_medium.setEnabled(true);
+                btn_high.setEnabled(true);
+                try {
+                    params.put("room",room);
+                    params.put("lumen",0);
+                    doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
+                    //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_weak:
+                light_label.setText("Luminosidad: Tenue");
+                btn_off.setEnabled(true);
+                btn_weak.setEnabled(false);
+                btn_medium.setEnabled(true);
+                btn_high.setEnabled(true);
+                try {
+                    params.put("room",room);
+                    params.put("lumen",1);
+                    doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
+                    //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_medium:
+                light_label.setText("Luminosidad: Medio");
+                btn_off.setEnabled(true);
+                btn_weak.setEnabled(true);
+                btn_medium.setEnabled(false);
+                btn_high.setEnabled(true);
+                try {
+                    params.put("room",room);
+                    params.put("lumen",2);
+                    doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
+                    //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.btn_high:
+                light_label.setText("Luminosidad: Alto");
+                btn_off.setEnabled(true);
+                btn_weak.setEnabled(true);
+                btn_medium.setEnabled(true);
+                btn_high.setEnabled(false);
+                try {
+                    params.put("room",room);
+                    params.put("lumen",3);
+                    doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
+                    //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
 
-                HttpResponse resp = httpClient.execute(post);
-                String respStr = EntityUtils.toString(resp.getEntity());
-
-                if(!respStr.equals("true"))
-                    resul = new JSONObject(respStr);
-            }
-            catch(Exception ex) {
-                Log.e("ServicioRest","Error!", ex);
-                resul = null;
-            }
-
-            return resul;
-        }
-
-        protected void onPostExecute(JSONObject result) {
-            super.onPostExecute(result);
-
-            try {
-                 Toast.makeText(LightActivity.this,result.getString("msg"), Toast.LENGTH_SHORT).show();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
