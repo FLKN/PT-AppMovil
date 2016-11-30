@@ -29,8 +29,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderActivity extends AppCompatActivity {
@@ -40,6 +43,8 @@ public class OrderActivity extends AppCompatActivity {
 
     private ArrayList<Integer> order_ids;
     private ArrayList<String> order_list;
+    private ArrayList<Integer> order_cant;
+    private float[] order_unit;
     private float order_cost;
     private int room;
 
@@ -56,7 +61,11 @@ public class OrderActivity extends AppCompatActivity {
 
         this.order_cost = getIntent().getFloatExtra("order_cost", 0);
         this.order_ids = getIntent().getIntegerArrayListExtra("order_ids");
+        this.order_cant = getIntent().getIntegerArrayListExtra("order_cant");
         this.order_list = getIntent().getStringArrayListExtra("order_list");
+
+        this.order_unit = getIntent().getFloatArrayExtra("order_unit");
+
         this.room = getIntent().getIntExtra("room",0);
 
         this.order_box = (TextView)findViewById(R.id.order_box);

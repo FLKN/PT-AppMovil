@@ -31,9 +31,10 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
     private float lumen;
     private int room;
 
-    Button btn_off,btn_weak,btn_medium,btn_high;
+    private Button btn_off,btn_weak,btn_medium,btn_high;
+    private TextView preset_label;
     private TextView light_label;
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
 
 
         light_label = (TextView)findViewById(R.id.light_text);
+        preset_label = (TextView)findViewById(R.id.preset_text);
 
         btn_off = (Button) findViewById(R.id.btn_off);
         btn_weak = (Button) findViewById(R.id.btn_weak);
@@ -63,8 +65,9 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
         JSONObject params = new JSONObject();
         try {
             params.put("room",room);
-            doGetLightStatus("http://pt-backend.azurewebsites.net/sensors/get_light",params);
-            //doGetLightStatus("http://192.168.1.68:3000/sensors/get_light",params);
+            params.put("lumen",4);
+            //doGetLightStatus("http://pt-backend.azurewebsites.net/sensors/get_light",params);
+            doGetLightStatus("http://192.168.43.71:3000/sensors/get_light",params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -106,31 +109,33 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
 
                         progressDialog.dismiss();
 
-                        String lumen = "";
+                        String preset = "";
                         try {
-                            switch (response.getInt("lumen")) {
+                            switch (response.getInt("preset")) {
                                 case 0:
-                                    lumen = "Apagado";
+                                    preset = "Apagado";
                                     btn_off.setEnabled(false);
                                     break;
                                 case 1:
-                                    lumen = "Tenue";
+                                    preset = "Tenue";
                                     btn_weak.setEnabled(false);
                                     break;
                                 case 2:
-                                    lumen = "Medio";
+                                    preset = "Medio";
                                     btn_medium.setEnabled(false);
                                     break;
                                 case 3:
-                                    lumen = "Alto";
+                                    preset = "Alto";
                                     btn_high.setEnabled(false);
                                     break;
                             }
+                            light_label.setText("Luminosidad: " + response.getDouble("lumen"));
+                            preset_label.setText("Nivel: " + preset);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
-                        light_label.setText("Luminosidad: "+lumen);
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -182,7 +187,7 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
 
         switch (v.getId()) {
             case R.id.btn_off:
-                light_label.setText("Luminosidad: Apagado");
+                preset_label.setText("Nivel: Apagado");
                 btn_off.setEnabled(false);
                 btn_weak.setEnabled(true);
                 btn_medium.setEnabled(true);
@@ -197,7 +202,7 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_weak:
-                light_label.setText("Luminosidad: Tenue");
+                preset_label.setText("Nivel: Tenue");
                 btn_off.setEnabled(true);
                 btn_weak.setEnabled(false);
                 btn_medium.setEnabled(true);
@@ -212,7 +217,7 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_medium:
-                light_label.setText("Luminosidad: Medio");
+                preset_label.setText("Nivel: Medio");
                 btn_off.setEnabled(true);
                 btn_weak.setEnabled(true);
                 btn_medium.setEnabled(false);
@@ -227,7 +232,7 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_high:
-                light_label.setText("Luminosidad: Alto");
+                preset_label.setText("Nivel: Alto");
                 btn_off.setEnabled(true);
                 btn_weak.setEnabled(true);
                 btn_medium.setEnabled(true);

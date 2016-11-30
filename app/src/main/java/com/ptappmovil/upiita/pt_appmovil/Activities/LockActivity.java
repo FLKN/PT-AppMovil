@@ -1,29 +1,28 @@
 package com.ptappmovil.upiita.pt_appmovil.Activities;
 
-import android.os.AsyncTask;
+import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.ptappmovil.upiita.pt_appmovil.R;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +34,7 @@ public class LockActivity extends AppCompatActivity {
     private int status;
     private int room;
 
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,20 +51,27 @@ public class LockActivity extends AppCompatActivity {
         lock_switch = (Switch)findViewById(R.id.lock_switch);
         lock_text = (TextView)findViewById(R.id.lock_text);
 
-        LockRequest get_status = new LockRequest();
-        get_status.execute(new Integer(room));
+        JSONObject params = new JSONObject();
+        try {
+            params.put("room",room);
+            //doGetLockStatus("http://pt-backend.azurewebsites.net/sensors/get_lock",params);
+            doGetLockStatus("http://192.168.1.68:3000/sensors/get_lock",params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         lock_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                Toast.makeText(LockActivity.this,"checked: "+isChecked,Toast.LENGTH_SHORT).show();
+                /*if(isChecked){
                     new LockRefreshRequest(room,1).execute();
                     lock_text.setText("Puerta Abierta");
                 }
                 else {
                     new LockRefreshRequest(room,0).execute();
                     lock_text.setText("Puerta Cerrada");
-                }
+                }*/
             }
         });
     }
@@ -86,111 +93,72 @@ public class LockActivity extends AppCompatActivity {
         }
     }
 
-    private class LockRequest extends AsyncTask<Integer, Integer, JSONObject> {
+    public void doGetLockStatus(String url, JSONObject params) {
+        progressDialog = new ProgressDialog(LockActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setMessage("Obteniendo estado...");
+        progressDialog.show();
 
-        protected JSONObject doInBackground(Integer... params) {
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-            JSONObject resul = null;
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
 
-            HttpClient httpClient = new DefaultHttpClient();
+                        progressDialog.dismiss();
 
-            HttpPost post = new HttpPost("http://ptserver.southcentralus.cloudapp.azure.com:9090/sensors/get_lock");
-            post.setHeader("content-type", "application/json");
+                        try {
+                            lock_text.setText(response.getString("msg"));
 
-            try {
-                JSONObject dato = new JSONObject();
-
-                dato.put("room", params[0].intValue());
-
-                StringEntity entity = new StringEntity(dato.toString());
-                post.setEntity(entity);
-
-                HttpResponse resp = httpClient.execute(post);
-                String respStr = EntityUtils.toString(resp.getEntity());
-
-                if(!respStr.equals("true"))
-                    resul = new JSONObject(respStr);
-            }
-            catch(Exception ex) {
-                Log.e("ServicioRest","Error!", ex);
-                resul = null;
-            }
-
-            return resul;
-        }
-
-        protected void onPostExecute(JSONObject result) {
-            super.onPostExecute(result);
-
-            try {
-                if(result.getBoolean("action")){
-                    if (result.getInt("lock_state") == 1){
-                        lock_switch.setChecked(true);
-                        lock_text.setText(result.getString("msg"));
+                            lock_switch.setChecked(response.getBoolean("lock_state"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-                    else{
-                        lock_switch.setChecked(false);
-                        lock_text.setText(result.getString("msg"));
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d("Error", "Error: " + error.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(LockActivity.this,error.toString(),Toast.LENGTH_SHORT).show();
                     }
-                }
-                else
-                    Toast.makeText(LockActivity.this,result.getString("msg"), Toast.LENGTH_SHORT).show();
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+                });
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(getRequest);
     }
 
-    private class LockRefreshRequest extends AsyncTask<Void, Void, JSONObject> {
-        int room;
-        int lock_state;
+    public void doSetLockStatus(String url, JSONObject params) {
+        progressDialog = new ProgressDialog(LockActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setMessage("Cambiando modo...");
+        progressDialog.show();
 
-        public LockRefreshRequest(int room, int lock_state) {
-            this.room = room;
-            this.lock_state = lock_state;
-        }
-        protected JSONObject doInBackground(Void... params) {
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-            JSONObject resul = null;
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Response", response.toString());
 
-            HttpClient httpClient = new DefaultHttpClient();
+                        progressDialog.dismiss();
 
-            HttpPost post = new HttpPost("http://ptserver.southcentralus.cloudapp.azure.com:9090/sensors/update_lock");
-            post.setHeader("content-type", "application/json");
 
-            try {
-                JSONObject dato = new JSONObject();
-
-                dato.put("room", room);
-                dato.put("lock_state", lock_state);
-
-                StringEntity entity = new StringEntity(dato.toString());
-                post.setEntity(entity);
-
-                HttpResponse resp = httpClient.execute(post);
-                String respStr = EntityUtils.toString(resp.getEntity());
-
-                if(!respStr.equals("true"))
-                    resul = new JSONObject(respStr);
-            }
-            catch(Exception ex) {
-                Log.e("ServicioRest","Error!", ex);
-                resul = null;
-            }
-
-            return resul;
-        }
-
-        protected void onPostExecute(JSONObject result) {
-            super.onPostExecute(result);
-
-            try {
-                Toast.makeText(LockActivity.this,result.getString("msg"), Toast.LENGTH_SHORT).show();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyLog.d("Error", "Error: " + error.getMessage());
+                        progressDialog.dismiss();
+                        Toast.makeText(LockActivity.this,error.toString(),Toast.LENGTH_SHORT).show();
+                    }
+                });
+        getRequest.setRetryPolicy(new DefaultRetryPolicy(10000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(getRequest);
     }
 
 }

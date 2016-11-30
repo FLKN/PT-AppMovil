@@ -1,9 +1,11 @@
 package com.ptappmovil.upiita.pt_appmovil.Activities;
 
+import android.app.Dialog;
 import android.app.LauncherActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,8 +19,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,22 +53,20 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class ServiceActivity extends AppCompatActivity {
 
-    private TextView service_list_label;
-    private ListView service_listview;
-    private TextView service_header;
-
-    private ArrayList<Integer> order_ids;
-    private ArrayList<String> order_list;
+    ArrayList<Integer> order_ids;
+    ArrayList<Integer> order_cant;
+    ArrayList<Float> order_unit;
+    ArrayList<String> order_list;
     List items = new ArrayList();
-    ServiceAdapter adapter = null;
+    TextView order_label;
     private float order_cost;
     private int room;
-
     private ProgressDialog progressDialog;
 
     @Override
@@ -74,50 +81,36 @@ public class ServiceActivity extends AppCompatActivity {
         Bundle control_info =  getIntent().getExtras();
         this.room = control_info.getInt("room");
 
-        this.service_list_label = (TextView)findViewById(R.id.service_list_label);
-        this.service_listview = (ListView)findViewById(R.id.service_listview);
-        this.service_header = (TextView)findViewById(R.id.service_header);
+        order_label = (TextView)findViewById(R.id.order_label);
+        order_label.setTypeface(null, Typeface.BOLD);
 
-        //doGetDishesRequest("http://192.168.1.68:3000/dishes/get_dishes");
         doGetDishesRequest("http://pt-backend.azurewebsites.net/dishes/get_dishes");
 
 
         this.order_ids = new ArrayList<Integer>();
+        this.order_cant = new ArrayList<Integer>();
         this.order_list = new ArrayList<String>();
-
-        this.service_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView selected_item = (TextView)view.findViewById(R.id.dish_name);
-                TextView selected_id = (TextView)view.findViewById(R.id.dish_id);
-                TextView cost_item = (TextView)view.findViewById(R.id.dish_cost);
-
-                order_cost += Float.valueOf(cost_item.getText().toString());
-                service_header.setText("Tu Orden: $" + order_cost);
-                order_ids.add(Integer.valueOf(selected_id.getText().toString()));
-                order_list.add(selected_item.getText().toString());
-
-                service_list_label.setText(service_list_label.getText() + "\n" + selected_item.getText());
-
-                items.remove(position);
-                adapter.notifyDataSetChanged();
-                adapter.notifyDataSetInvalidated();
-
-            }
-        });
+        this.order_unit = new ArrayList<Float>();
 
     }
-
-    public void makeOrder(View v){
-        Intent makeOrder_intent = new Intent();
-        makeOrder_intent.setClass(ServiceActivity.this,OrderActivity.class);
-        makeOrder_intent.putIntegerArrayListExtra("order_ids", order_ids);
-        makeOrder_intent.putExtra("room", room);
-        makeOrder_intent.putExtra("order_cost", order_cost);
-        makeOrder_intent.putExtra("order_list",order_list);
-        startActivityForResult(makeOrder_intent,1);
-        overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+    public void placeOrder(View v){
+        if(order_list.size() == 0){
+            Toast.makeText(ServiceActivity.this,"Debes seleccionar al menos un producto",Toast.LENGTH_LONG).show();
+        } else {
+            Intent makeOrder_intent = new Intent();
+            makeOrder_intent.setClass(ServiceActivity.this,OrderActivity.class);
+            makeOrder_intent.putIntegerArrayListExtra("order_ids", order_ids);
+            makeOrder_intent.putIntegerArrayListExtra("order_ids", order_cant);
+            makeOrder_intent.putExtra("room", room);
+            makeOrder_intent.putExtra("order_cost", order_cost);
+            makeOrder_intent.putExtra("order_list",order_list);
+            makeOrder_intent.putExtra("order_unit",order_unit.toArray());
+            startActivityForResult(makeOrder_intent,1);
+            overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+        }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -160,31 +153,102 @@ public class ServiceActivity extends AppCompatActivity {
                 {
                     @Override
                     public void onResponse(String response) {
-                        // display response
+                        Log.d("aaa",response.toString());
                         try {
                             JSONObject json = new JSONObject(response);
                             if(json.getBoolean("action")){
-                                String dishes = json.getString("dishes");
 
                                 JSONArray dishes_obj = new JSONArray(json.getString("dishes"));
 
+                                LinearLayout layout = (LinearLayout)findViewById(R.id.content_service);
+
                                 for (int i=0; i < dishes_obj.length(); i++) {
-                                    JSONObject dishObj = new JSONObject(dishes_obj.getString(i));
+                                    final JSONObject dishObj = new JSONObject(dishes_obj.getString(i));
 
-                                    items.add(new ServiceItem(
-                                            dishObj.getString("id"),
-                                            dishObj.getString("nombre"),
-                                            dishObj.getString("precio")
-                                    ));
+                                    CheckBox id_item = new CheckBox(ServiceActivity.this);
+                                    id_item.setLayoutParams(new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT));
+                                    id_item.setText(dishObj.getString("nombre") + " - $" + dishObj.getString("precio") + "MXN");
+                                    final int id = dishObj.getInt("id");
+                                    final String name = dishObj.getString("nombre");
+                                    final String price = dishObj.getString("precio");
+                                    id_item.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            boolean isChecked = ((CheckBox)view).isChecked();
+
+                                            if (isChecked) {
+                                                final Dialog d = new Dialog(ServiceActivity.this, R.style.AppTheme_Dark_Dialog);
+                                                d.setTitle("Selecciona la cantidad");
+                                                d.setContentView(R.layout.number_dialog);
+                                                d.setCanceledOnTouchOutside(false);
+                                                d.setCancelable(false);
+                                                Button b1 = (Button) d.findViewById(R.id.button1);
+                                                final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
+                                                np.setMaxValue(10);
+                                                np.setMinValue(1);
+                                                np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                                                    @Override
+                                                    public void onValueChange(NumberPicker picker, int oldVal, int newVal) {}
+                                                });
+                                                b1.setOnClickListener(new View.OnClickListener()
+                                                {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        order_cost += Float.valueOf(price) * np.getValue();
+                                                        order_label.setText("$"+order_cost+"MXN");
+                                                        order_unit.add(Float.valueOf(price) * np.getValue());
+                                                        order_cant.add(np.getValue());
+                                                        d.dismiss();
+                                                    }
+                                                });
+                                                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                                                lp.copyFrom(d.getWindow().getAttributes());
+                                                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                                                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                                                d.show();
+                                                d.getWindow().setAttributes(lp);
+
+                                                order_ids.add(id);
+                                                order_list.add(name);
+                                            }
+                                            else {
+                                                for(int i = 0; i < order_list.size(); i++) {
+                                                    String aux = order_list.get(i);
+                                                    float aux2 = order_unit.get(i);
+                                                    if(aux.equals(name)) {
+                                                        order_list.remove(i);
+                                                        order_cant.remove(i);
+                                                        order_unit.remove(i);
+                                                        order_ids.remove(i);
+                                                        order_cost -= aux2;
+                                                        order_label.setText("$"+order_cost+"MXN");
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    TextView description_item = new TextView(ServiceActivity.this);
+                                    LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                                            LinearLayout.LayoutParams.MATCH_PARENT,
+                                            LinearLayout.LayoutParams.WRAP_CONTENT);
+                                    llp.setMargins(0,0,0,30);
+                                    description_item.setLayoutParams(llp);
+                                    description_item.setText(dishObj.getString("descripcion"));
+                                    description_item.setTypeface(null, Typeface.ITALIC);
+
+                                    layout.addView(id_item);
+                                    layout.addView(description_item);
                                 }
-
                             } else {
                                 Toast.makeText(ServiceActivity.this,"Ocurrio un error, intente una vez más",Toast.LENGTH_SHORT).show();
                             }
 
 
-                            adapter = new ServiceAdapter(ServiceActivity.this, items);
-                            service_listview.setAdapter(adapter);
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();

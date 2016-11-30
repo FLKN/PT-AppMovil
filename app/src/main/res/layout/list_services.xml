@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:weightSum="1">
 
     <TextView
@@ -16,13 +16,12 @@
 
     <TextView
         android:id="@+id/dish_name"
-        android:layout_width="150dp"
+        android:layout_width="117dp"
         android:layout_height="match_parent"
         android:padding="5dp"
         android:textSize="15dp"
         android:gravity="center_horizontal|center_vertical"
-        android:textStyle="italic"
-        android:layout_weight="0.39" />
+        android:textStyle="italic" />
 
     <TextView
         android:id="@+id/dish_cost"
@@ -32,5 +31,28 @@
         android:textSize="18dp"
         android:gravity="center_horizontal|center_vertical"
         android:textStyle="bold" />
+
+    <!--<ImageView
+        android:id="@+id/cart_minus_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_minus" />
+
+    <TextView
+        android:id="@+id/cart_product_quantity_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:text="10"
+        android:textSize="12dip"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/cart_plus_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_plus" />-->
 
 </LinearLayout>
