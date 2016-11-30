@@ -1,7 +1,10 @@
 package com.ptappmovil.upiita.pt_appmovil.Activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +26,7 @@ import com.ptappmovil.upiita.pt_appmovil.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Manifest;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -94,11 +98,10 @@ public class MainActivity extends AppCompatActivity
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
                 else if (position == 1){
-                    Toast.makeText(MainActivity.this,"Redirigiendo a Google Trips",Toast.LENGTH_LONG).show();
-                    Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.google.android.apps.travel.onthego");
-                    if (launchIntent != null) {
-                        startActivity(launchIntent);//null pointer check in case package name was not found
-                    }
+                    Intent control_intent = new Intent();
+                    control_intent.setClass(MainActivity.this,AgendaActivity.class);
+                    control_intent.putExtra("room",room);
+                    startActivity(control_intent);
                     overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
                 }
                 else if (position == 2){
@@ -131,8 +134,29 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Intent control_intent = new Intent();
 
-        // Condicionales para identificar acciones del Navigataion Drawer
+        switch (id){
+            case R.id.see_events:
+                control_intent.setClass(MainActivity.this,AgendaActivity.class);
+                control_intent.putExtra("room",room);
+                startActivity(control_intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                break;
+            case R.id.place_order:
+                control_intent.setClass(MainActivity.this,ServiceActivity.class);
+                control_intent.putExtra("room",room);
+                startActivity(control_intent);
+                overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
+                break;
+            case R.id.call:
+                Intent intent = new Intent(Intent.ACTION_CALL,Uri.parse("tel:58985468"));
+                if(ActivityCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED)
+                    Toast.makeText(MainActivity.this,"No hay permisos para hacer llamadas",Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+                break;
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

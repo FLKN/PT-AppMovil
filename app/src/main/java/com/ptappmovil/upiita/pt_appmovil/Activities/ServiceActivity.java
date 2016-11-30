@@ -1,33 +1,19 @@
 package com.ptappmovil.upiita.pt_appmovil.Activities;
 
 import android.app.Dialog;
-import android.app.LauncherActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.ListMenuItemView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.NumberPicker;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,22 +24,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.ptappmovil.upiita.pt_appmovil.Adapters.ServiceAdapter;
-import com.ptappmovil.upiita.pt_appmovil.Items.ServiceItem;
-import com.ptappmovil.upiita.pt_appmovil.Login;
 import com.ptappmovil.upiita.pt_appmovil.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -107,26 +87,6 @@ public class ServiceActivity extends AppCompatActivity {
             makeOrder_intent.putExtra("order_unit",order_unit.toArray());
             startActivityForResult(makeOrder_intent,1);
             overridePendingTransition(R.anim.anim_fade_in, R.anim.anim_fade_out);
-        }
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 

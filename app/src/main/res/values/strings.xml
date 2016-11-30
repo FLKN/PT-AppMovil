@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Pt-AppMovil</string>
+    <string name="app_name">DOMHotel</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Ajustes</string>
 
-    <string name="welcome">UPIITA Domotics</string>
+    <string name="welcome">DOMHotel</string>
     <string name="title_activity_login">Iniciar Sesión</string>
 
     <!-- Strings related to login -->
@@ -24,7 +24,8 @@
     <string name="title_activity_lock">Cerradura</string>
     <string name="title_activity_air">Aire Acondicionado</string>
     <string name="title_activity_access">Estado de Accesos</string>
-    <string name="title_activity_service">Servicio de comida al Cuarto</string>
+    <string name="title_activity_service">Servicio de Comida</string>
     <string name="title_activity_order">Confirmar Orden</string>
+    <string name="title_activity_agenda">Eventos Disponibles</string>
 
 </resources>

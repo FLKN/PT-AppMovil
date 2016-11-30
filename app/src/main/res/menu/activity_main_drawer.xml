@@ -5,13 +5,9 @@
         <item android:title="Agenda">
             <menu>
                 <item
-                    android:id="@+id/ver_eventos"
+                    android:id="@+id/see_events"
                     android:icon="@drawable/ic_event_black"
                     android:title="Ver eventos disponibles" />
-                <item
-                    android:id="@+id/crear_agenda"
-                    android:icon="@drawable/ic_map_black"
-                    android:title="Crear Agenda" />
             </menu>
         </item>
     </group>
@@ -20,11 +16,11 @@
         <item android:title="Servicio al cuarto">
             <menu>
                 <item
-                    android:id="@+id/ordenar"
+                    android:id="@+id/place_order"
                     android:icon="@drawable/ic_local_dining_black"
                     android:title="Ordenar al cuarto" />
                 <item
-                    android:id="@+id/hablar"
+                    android:id="@+id/call"
                     android:icon="@drawable/ic_phone_forwarded_black"
                     android:title="Hablar a recepcion" />
             </menu>
