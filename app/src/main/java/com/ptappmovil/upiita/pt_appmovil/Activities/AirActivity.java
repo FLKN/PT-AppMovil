@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +33,12 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AirActivity extends AppCompatActivity {
+public class AirActivity extends AppCompatActivity implements View.OnClickListener{
 
     private float intensity, temperature;
     private TextView intensity_label,temperature_label;
     private int room;
-
+    private Button btn_off,btn_medium,btn_high,btn_refresh;
     private ProgressDialog progressDialog;
 
     @Override
@@ -52,18 +53,18 @@ public class AirActivity extends AppCompatActivity {
         Bundle control_info =  getIntent().getExtras();
         this.room = control_info.getInt("room");
 
-        try {
-            JSONObject dato = new JSONObject();
-            dato.put("room", this.room);
-            this.doAirStateRequest(dato,"http://pt-backend.azurewebsites.net/sensors/get_air");
-        } catch(Exception ex) {
-            Log.d("Error","Error");
-        }
-
         intensity_label = (TextView)findViewById(R.id.intensity_text);
         temperature_label = (TextView)findViewById(R.id.temperatuer_text);
 
+        btn_off = (Button)findViewById(R.id.btn_off);
+        btn_medium = (Button)findViewById(R.id.btn_medium);
+        btn_high = (Button)findViewById(R.id.btn_high);
+        btn_refresh = (Button) findViewById(R.id.btn_refresh);
 
+        btn_off.setOnClickListener(this);
+        btn_medium.setOnClickListener(this);
+        btn_high.setOnClickListener(this);
+        btn_refresh.setOnClickListener(this);
 
     }
 
@@ -132,6 +133,55 @@ public class AirActivity extends AppCompatActivity {
         };
 
         queue.add(getRequest);
+    }
+
+    public void onClick(View v){
+        JSONObject dato = new JSONObject();
+        switch (v.getId()){
+            case R.id.air_off:
+                try {
+                    dato.put("room", this.room);
+                    dato.put("intensity", "k");
+                    dato.put("power",0);
+                    doAirUpdateRequest(dato,"http://pt-backend.azurewebsites.net/sensors/update_air");
+                } catch(Exception ex) {
+                    Log.d("Error","Error");
+                }
+                btn_off.setEnabled(false);
+                btn_medium.setEnabled(true);
+                btn_high.setEnabled(true);
+                break;
+            case R.id.air_medium:
+                try {
+                    dato.put("room", this.room);
+                    dato.put("intensity", "l");
+                    dato.put("power",1);
+                    doAirUpdateRequest(dato,"http://pt-backend.azurewebsites.net/sensors/update_air");
+                } catch(Exception ex) {
+                    Log.d("Error","Error");
+                }
+                btn_off.setEnabled(true);
+                btn_medium.setEnabled(false);
+                btn_high.setEnabled(true);
+                break;
+            case R.id.air_high:
+                try {
+
+                    dato.put("room", this.room);
+                    dato.put("intensity", "m");
+                    dato.put("power",1);
+                    doAirUpdateRequest(dato,"http://pt-backend.azurewebsites.net/sensors/update_air");
+                } catch(Exception ex) {
+                    Log.d("Error","Error");
+                }
+                btn_off.setEnabled(true);
+                btn_medium.setEnabled(true);
+                btn_high.setEnabled(false);
+                break;
+            case R.id.btn_refresh:
+                doAirStateRequest(dato,"http://pt-backend.azurewebsites.net/sensors/get_air");
+                break;
+        }
     }
 
     private void doAirUpdateRequest(JSONObject params, String url) {

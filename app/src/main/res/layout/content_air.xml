@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,54 +10,58 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Activities.AirActivity"
+    android:orientation="vertical"
     tools:showIn="@layout/activity_air">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:id="@+id/temperatuer_text"
-        android:text="Temperatura: -"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:shrinkColumns="*">
+        <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:text="Temperatura:        "
+                android:id="@+id/temperatuer_text"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:layout_column="0"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:text="Actualizar"
+                android:id="@+id/btn_refresh"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:text="Intensidad:"
+                android:id="@+id/intensity_text"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:layout_marginBottom="30dp"
+                android:layout_column="0"/>
+        </TableRow>
+    </TableLayout>
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:id="@+id/intensity_text"
-        android:text="Intensidad: -"
-        android:layout_marginTop="14dp"
-        android:layout_below="@+id/temperatuer_text"
-        android:layout_centerHorizontal="true" />
-
-    <RadioGroup
-        android:layout_width="wrap_content"
+        android:id="@+id/air_off"
+        android:text="Apagado"/>
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/intensity_text"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp" >
+        android:id="@+id/air_medium"
+        android:text="Medio"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/air_high"
+        android:text="Alto"/>
 
-        <RadioButton
-            android:text="Alto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButton"
-            android:layout_weight="1" />
-
-        <RadioButton
-            android:text="RadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButton2"
-            android:layout_weight="1" />
-
-        <RadioButton
-            android:text="RadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/radioButton3"
-            android:layout_weight="1" />
-    </RadioGroup>
-
-</RelativeLayout>
+</LinearLayout>

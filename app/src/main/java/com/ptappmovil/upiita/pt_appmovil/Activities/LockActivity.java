@@ -54,8 +54,8 @@ public class LockActivity extends AppCompatActivity {
         JSONObject params = new JSONObject();
         try {
             params.put("room",room);
-            //doGetLockStatus("http://pt-backend.azurewebsites.net/sensors/get_lock",params);
-            doGetLockStatus("http://192.168.1.68:3000/sensors/get_lock",params);
+            doGetLockStatus("http://pt-backend.azurewebsites.net/sensors/get_lock",params);
+            //doGetLockStatus("http://192.168.1.68:3000/sensors/get_lock",params);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -63,15 +63,32 @@ public class LockActivity extends AppCompatActivity {
         lock_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(LockActivity.this,"checked: "+isChecked,Toast.LENGTH_SHORT).show();
-                /*if(isChecked){
-                    new LockRefreshRequest(room,1).execute();
+                if(isChecked){
+                    JSONObject params = new JSONObject();
+                    try {
+                        params.put("room",room);
+                        params.put("lock_state","g");
+                        params.put("power",1);
+                        doSetLockStatus("http://pt-backend.azurewebsites.net/sensors/update_lock",params);
+                        //doGetLockStatus("http://192.168.1.68:3000/sensors/get_lock",params);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     lock_text.setText("Puerta Abierta");
                 }
                 else {
-                    new LockRefreshRequest(room,0).execute();
+                    JSONObject params = new JSONObject();
+                    try {
+                        params.put("room",room);
+                        params.put("lock_state","h");
+                        params.put("power",0);
+                        doSetLockStatus("http://pt-backend.azurewebsites.net/sensors/update_lock",params);
+                        //doGetLockStatus("http://192.168.1.68:3000/sensors/get_lock",params);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     lock_text.setText("Puerta Cerrada");
-                }*/
+                }
             }
         });
     }

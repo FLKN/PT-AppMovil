@@ -8,10 +8,23 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Activities.AccessActivity"
     tools:showIn="@layout/activity_access">
-
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_weight="0"
+        >
+        <Button
+            android:id="@+id/btn_refresh"
+            android:text="Actualizar"
+            android:onClick="clickRefresh"
+            android:layout_column="0"
+            android:layout_span="2"
+            android:layout_gravity="center_vertical" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_gravity="center"
         android:padding="5dp">

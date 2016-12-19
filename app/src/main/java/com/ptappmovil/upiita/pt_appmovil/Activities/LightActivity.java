@@ -31,7 +31,7 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
     private float lumen;
     private int room;
 
-    private Button btn_off,btn_weak,btn_medium,btn_high;
+    private Button btn_off,btn_weak,btn_medium,btn_high,btn_refresh;
     private TextView preset_label;
     private TextView light_label;
     private ProgressDialog progressDialog;
@@ -56,21 +56,15 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
         btn_weak = (Button) findViewById(R.id.btn_weak);
         btn_medium = (Button) findViewById(R.id.btn_medium);
         btn_high = (Button) findViewById(R.id.btn_high);
+        btn_refresh = (Button) findViewById(R.id.btn_refresh);
 
         btn_off.setOnClickListener(this);
         btn_weak.setOnClickListener(this);
         btn_medium.setOnClickListener(this);
         btn_high.setOnClickListener(this);
+        btn_refresh.setOnClickListener(this);
 
-        JSONObject params = new JSONObject();
-        try {
-            params.put("room",room);
-            params.put("lumen",4);
-            //doGetLightStatus("http://pt-backend.azurewebsites.net/sensors/get_light",params);
-            doGetLightStatus("http://192.168.43.71:3000/sensors/get_light",params);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
     }
 
 
@@ -93,14 +87,14 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    public void doGetLightStatus(String url, JSONObject params) {
+    public void doGetLightStatus(String url) {
         progressDialog = new ProgressDialog(LightActivity.this, R.style.AppTheme_Dark_Dialog);
         progressDialog.setMessage("Obteniendo estado...");
         progressDialog.show();
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, params,
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>()
                 {
                     @Override
@@ -194,7 +188,8 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
                 btn_high.setEnabled(true);
                 try {
                     params.put("room",room);
-                    params.put("lumen",0);
+                    params.put("lumen","a");
+                    params.put("power",0);
                     doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
                     //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
                 } catch (JSONException e) {
@@ -209,7 +204,8 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
                 btn_high.setEnabled(true);
                 try {
                     params.put("room",room);
-                    params.put("lumen",1);
+                    params.put("lumen","b");
+                    params.put("power",1);
                     doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
                     //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
                 } catch (JSONException e) {
@@ -224,7 +220,8 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
                 btn_high.setEnabled(true);
                 try {
                     params.put("room",room);
-                    params.put("lumen",2);
+                    params.put("lumen","c");
+                    params.put("power",1);
                     doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
                     //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
                 } catch (JSONException e) {
@@ -239,14 +236,18 @@ public class LightActivity extends AppCompatActivity implements View.OnClickList
                 btn_high.setEnabled(false);
                 try {
                     params.put("room",room);
-                    params.put("lumen",3);
+                    params.put("lumen","d");
+                    params.put("power",1);
                     doSetLightStatus("http://pt-backend.azurewebsites.net/sensors/update_light",params);
                     //doSetLightStatus("http://192.168.1.68:3000/sensors/update_light",params);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 break;
-
+            case R.id.btn_refresh:
+                doGetLightStatus("http://pt-backend.azurewebsites.net/sensors/get_light");
+                //doGetLightStatus("http://192.168.1.67:3000/sensors/get_light",params);
+                break;
         }
     }
 }
